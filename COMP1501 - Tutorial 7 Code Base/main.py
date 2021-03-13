@@ -73,7 +73,7 @@ def process(game_data):
             if game_data["selected_tower"] : 
                 if check_location(game_data["map"],game_data["settings"],pos): #temporary, also needs a check for money
                     game_data["selected_tower"] = False
-                    game_data["towers"].append(Basic_Tower(game_data["shop"].clicked_item,pos))
+                    game_data["towers"].append(Basic_Tower(game_data["shop"].clicked_item,tuple(map(lambda x: round((x-20)/20) , pos))))
                     game_data["shop"].clicked_item = None
                 else:
                     game_data["selected_tower"] = False
