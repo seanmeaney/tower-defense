@@ -35,8 +35,8 @@ def initialize():
                   "selected_tower": None,
                   "clicked": False,
                   "settings": settings,
-                  "towers": [],
-                  "enemies": [],
+                  "towers": [Basic_Tower("Basic Tower Lv.1", (30,30))],
+                  "enemies": [Enemy("Lesser Alien", (1,0))],
                   "shop": Shop("Space", settings),
                   "map": Map(settings) }
 
@@ -77,11 +77,12 @@ def update(game_data):
     '''
     update_shop(game_data["shop"], game_data["current_currency"], game_data["settings"])
     
-    ## Replace this with code to update the Enemies ##
+    game_data["enemies"] = [i for i in game_data["enemies"] if i.alive == True]
+    for enemy in game_data["enemies"]:
+        update_enemy(enemy, game_data)
 
-    ## Replace this with code to update the Towers ##
-
-    pass # Remove this once you've implemented 'update()'
+    for tower in game_data["towers"]:
+        update_tower(tower, game_data)
 
 #### ====================================================================================================================== ####
 #############                                            RENDER                                                    #############

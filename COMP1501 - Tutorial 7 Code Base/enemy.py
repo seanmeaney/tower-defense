@@ -21,23 +21,46 @@ class Enemy:
         Output: An Enemy Object
         '''
         self.name = enemy_type
-        self.sprite = pygame.image.load(Enemy.enemy_data[enemy_type]["sprite"]).convert_alpha()
+        self.sprite = pygame.transform.scale(pygame.image.load(Enemy.enemy_data[enemy_type]["sprite"]).convert_alpha(), (40, 40))
         self.health = Enemy.enemy_data[enemy_type]["health"]
         self.speed = Enemy.enemy_data[enemy_type]["speed"]
         self.location = location
         self.direction = None
+        self.effects = []
+        self.alive = True
+
+    def takeHit(self, damage, effect=None):
+        self.health -= damage
+        print(f"hit taken! health is now {self.health}")
+        if effect not in self.effects and effect is not None:
+            self.effects.append(effect)
+
+    def move(self, map):
+        self.location = (self.location[0], self.location[1] + self.speed/10)
+
+
+class Basic_Bot(Enemy):
+    pass
+class Lefty_Bot(Enemy):
+    pass
+class Pathfinder_Bot(Enemy):
+    pass
+class Alien_Bot(Enemy):
+    pass
 
 #### ====================================================================================================================== ####
 #############                                       ENEMY_FUNCTIONS                                                #############
 #### ====================================================================================================================== ####
 
-def update_enemy(enemy, direction=None, damage=0):
-    # Replace this with code to update the enemy's location/etc.break
-    pass # Remove this once you've completed the code
+def update_enemy(enemy, game_data):
+    enemy.move(game_data["map"])
+    if enemy.health <= 0:
+        enemy.alive = False
 
 def render_enemy(enemy, screen, settings):
     ''' Helper function that renders a single provided Enemy.
     Input: Enemy Object, screen (pygame display), Settings Object
     Output: None
     '''
-    screen.blit(enemy.sprite, enemy.location)
+    if enemy.alive:
+        screen.blit(enemy.sprite, enemy.location)
