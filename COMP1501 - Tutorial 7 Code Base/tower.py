@@ -21,12 +21,12 @@ class Tower:
         Output: A Tower Object
         '''
         self.name = tower_type
-        self.sprite = pygame.image.load(Tower.tower_data[tower_type]["sprite"]).convert_alpha()
+        self.sprite = pygame.transform.scale(pygame.image.load(Tower.tower_data[tower_type]["sprite"]).convert_alpha(), (40,40))
         #self.radius_sprite = radius_sprite
         self.radius = Tower.tower_data[tower_type]["radius"]
         self.damage = Tower.tower_data[tower_type]["damage"]
         self.rate_of_fire = Tower.tower_data[tower_type]["rate_of_fire"]
-        self.location = location
+        self.location = (location[0]*20+20, location[1]*20+20)
         self.isClicked = False
         self.firingAt = None
         self.recharge = self.rate_of_fire
@@ -75,4 +75,4 @@ def render_tower(tower, screen, settings):
     screen.blit(tower.sprite, tower.location)
     if tower.name == "Basic Tower Lv.1":
         if tower.zapping is not None:
-            pygame.draw.aaline(screen, colours.magenta, tower.location, tower.zapping.location)
+            pygame.draw.aaline(screen, colours.magenta, (tower.location[0]+20, tower.location[1]+20), (tower.zapping.location[0]+20, tower.zapping.location[1]+20))

@@ -35,8 +35,8 @@ def initialize():
                   "selected_tower": None,
                   "clicked": False,
                   "settings": settings,
-                  "towers": [Basic_Tower("Basic Tower Lv.1", (30,30))],
-                  "enemies": [Enemy("Lesser Alien", (1,0))],
+                  "towers": [Basic_Tower("Basic Tower Lv.1", (3,3))],
+                  "enemies": [Enemy("Lesser Alien", (1,-1)), Enemy("Lesser Alien", (1,-2)), Enemy("Lesser Alien", (1,-3)), Enemy("Lesser Alien", (1,-4))],
                   "shop": Shop("Space", settings),
                   "map": Map(settings) }
 

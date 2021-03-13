@@ -24,7 +24,7 @@ class Enemy:
         self.sprite = pygame.transform.scale(pygame.image.load(Enemy.enemy_data[enemy_type]["sprite"]).convert_alpha(), (40, 40))
         self.health = Enemy.enemy_data[enemy_type]["health"]
         self.speed = Enemy.enemy_data[enemy_type]["speed"]
-        self.location = location
+        self.location = ((location[0]*20)+20, (location[1]*20)+20)
         self.direction = None
         self.effects = []
         self.alive = True
