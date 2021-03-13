@@ -38,7 +38,7 @@ def initialize():
                   "towers": [],
                   "enemies": [],
                   "shop": Shop("Space", settings),
-                  "map": Map(settings) }
+                  "map": Map(settings, True) }
 
     return game_data
 
@@ -51,6 +51,7 @@ def process(game_data):
     Input: game_data dictionary
     Output: None
     '''
+    pos = pygame.mouse.get_pos()
     for event in pygame.event.get():
 
         # Handle [X] press
@@ -61,10 +62,23 @@ def process(game_data):
         if event.type == pygame.MOUSEBUTTONDOWN:
             game_data["clicked"] = True
             game_data["selected_tower"] = False
+            if (t:=game_data["shop"].selected_item):
+                game_data["shop"].clicked_item = t
+                game_data["shop"].selected_item = None
+                game_data["selected_tower"] = True
 
         # Handle Mouse Button Up
         if event.type == pygame.MOUSEBUTTONUP:
             game_data["clicked"] = False
+            if game_data["selected_tower"] : 
+                if check_location(game_data["map"],game_data["settings"],pos): #temporary, also needs a check for money
+                    game_data["selected_tower"] = False
+                    game_data["towers"].append(Tower(game_data["shop"].clicked_item,pos, "temp"))
+                    game_data["shop"].clicked_item = None
+                else:
+                    game_data["selected_tower"] = False
+                    game_data["shop"].clicked_item = None
+
 
 #### ====================================================================================================================== ####
 #############                                            UPDATE                                                    #############
@@ -81,7 +95,7 @@ def update(game_data):
 
     ## Replace this with code to update the Towers ##
 
-    pass # Remove this once you've implemented 'update()'
+    # pass # Remove this once you've implemented 'update()'
 
 #### ====================================================================================================================== ####
 #############                                            RENDER                                                    #############
