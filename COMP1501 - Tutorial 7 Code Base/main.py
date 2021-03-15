@@ -91,7 +91,7 @@ def process(game_data):
                         game_data["current_currency"] -= game_data["shop"].shop_data[game_data["shop"].clicked_item]["cost"]
                         game_data["towers"].append(Basic_Tower(game_data["shop"].clicked_item,tuple(map(lambda x: round((x-20)/20) , pos))))
                     else:
-                        add_to_font_queue(game_data,("Insufficent Funds!", True, (0,0,0)),(game_data["settings"].window_size[0]//2,0), 5000)
+                        add_to_font_queue(game_data,("Insufficent Funds!", True, (0,0,0)),(game_data["settings"].window_size[0]//2,0), 3000)
                         
             game_data["selected_tower"] = False
             game_data["shop"].clicked_item = None
@@ -104,7 +104,6 @@ def process(game_data):
 def add_to_font_queue(game_data, what, where,time):
     game_data["font_queue"].append((what,where,time,USEREVENT+where[0]))
     pygame.time.set_timer(USEREVENT+where[0], time)
-
 
 def update(game_data):
     ''' Updating function - handles all the modifications to the game_data objects (other than boolean flags).
@@ -123,7 +122,6 @@ def update_all_enemies(game_data):
     else:
         game_data["current_wave"] +=1
         game_data["enemies"] = spawn_enemies(game_data["current_wave"])
-
 
 def update_all_towers(game_data):
     for tower in game_data["towers"]:
