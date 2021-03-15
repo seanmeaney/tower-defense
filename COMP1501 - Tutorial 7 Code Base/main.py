@@ -2,6 +2,7 @@
 #############                                           IMPORTS                                                    #############
 #### ====================================================================================================================== ####
 
+from pygame.constants import USEREVENT
 from helper_functions import *
 from settings import *
 from shop import *
@@ -38,7 +39,8 @@ def initialize():
                   "towers": [Basic_Tower("Basic Tower Lv.1", (3,3))],
                   "enemies": spawn_enemies(1),
                   "shop": Shop("Space", settings),
-                  "map": Map(settings, True) }
+                  "map": Map(settings, False),
+                  "font_queue" : []}
 
     return game_data
 
@@ -67,6 +69,10 @@ def process(game_data):
         if event.type == pygame.QUIT:
             game_data["stay_open"] = False
 
+        for f in game_data["font_queue"]:
+            if f[3] == event.type:
+                game_data["font_queue"].remove(f)
+
         # Handle Mouse Button Down
         if event.type == pygame.MOUSEBUTTONDOWN:
             game_data["clicked"] = True
@@ -79,19 +85,26 @@ def process(game_data):
         # Handle Mouse Button Up
         if event.type == pygame.MOUSEBUTTONUP:
             game_data["clicked"] = False
-            if game_data["selected_tower"] : 
-                if check_location(game_data["map"],game_data["settings"],pos): #temporary, also needs a check for money
-                    game_data["selected_tower"] = False
-                    game_data["towers"].append(Basic_Tower(game_data["shop"].clicked_item,tuple(map(lambda x: round((x-20)/20) , pos))))
-                    game_data["shop"].clicked_item = None
-                else:
-                    game_data["selected_tower"] = False
-                    game_data["shop"].clicked_item = None
+            if game_data["selected_tower"]: 
+                if check_location(game_data["map"],game_data["settings"],pos):
+                    if game_data["shop"].shop_data[game_data["shop"].clicked_item]["available"]:
+                        game_data["current_currency"] -= game_data["shop"].shop_data[game_data["shop"].clicked_item]["cost"]
+                        game_data["towers"].append(Basic_Tower(game_data["shop"].clicked_item,tuple(map(lambda x: round((x-20)/20) , pos))))
+                    else:
+                        add_to_font_queue(game_data,("Insufficent Funds!", True, (0,0,0)),(game_data["settings"].window_size[0]//2,0), 5000)
+                        
+            game_data["selected_tower"] = False
+            game_data["shop"].clicked_item = None
 
 
 #### ====================================================================================================================== ####
 #############                                            UPDATE                                                    #############
 #### ====================================================================================================================== ####
+
+def add_to_font_queue(game_data, what, where,time):
+    game_data["font_queue"].append((what,where,time,USEREVENT+where[0]))
+    pygame.time.set_timer(USEREVENT+where[0], time)
+
 
 def update(game_data):
     ''' Updating function - handles all the modifications to the game_data objects (other than boolean flags).
@@ -120,6 +133,10 @@ def update_all_towers(game_data):
 #############                                            RENDER                                                    #############
 #### ====================================================================================================================== ####
 
+def render_font_queue(game_data):
+    for f in game_data["font_queue"]: 
+        game_data["screen"].blit(game_data["settings"].font.render(*f[0]),f[1])
+
 def render(game_data):
     ''' Rendering function - displays all objects to screen.
     Input: game_data
@@ -131,6 +148,7 @@ def render(game_data):
         render_enemy(enemy, game_data["screen"], game_data["settings"])
     for tower in game_data["towers"]:
         render_tower(tower, game_data["screen"], game_data["settings"])
+    render_font_queue(game_data)
     pygame.display.update()
 
 #### ====================================================================================================================== ####

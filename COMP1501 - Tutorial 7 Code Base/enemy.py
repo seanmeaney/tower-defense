@@ -4,6 +4,7 @@
 
 from helper_functions import *
 import pygame
+import random
 
 #### ====================================================================================================================== ####
 #############                                         ENEMY_CLASS                                                  #############
@@ -41,6 +42,11 @@ class Enemy:
 
 class Basic_Bot(Enemy):
     pass
+    # def __init__(self, enemy_type, location):
+    #     super().__init__(enemy_type, location)
+
+    # def move(self, map):
+    #     rand = random.randint(4)
 class Lefty_Bot(Enemy):
     pass
 class Pathfinder_Bot(Enemy):
