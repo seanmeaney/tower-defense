@@ -30,13 +30,13 @@ def initialize():
     # Initialize game_data and return it
     game_data = { "screen": pygame.display.set_mode(settings.window_size),
                   "current_currency": settings.starting_currency,
-                  "current_wave": 0,
+                  "current_wave": 1,
                   "stay_open": True,
                   "selected_tower": None,
                   "clicked": False,
                   "settings": settings,
                   "towers": [Basic_Tower("Basic Tower Lv.1", (3,3))],
-                  "enemies": [Enemy("Lesser Alien", (1,-1)), Enemy("Lesser Alien", (1,-2)), Enemy("Lesser Alien", (1,-3)), Enemy("Lesser Alien", (1,-4))],
+                  "enemies": spawn_enemies(1),
                   "shop": Shop("Space", settings),
                   "map": Map(settings, True) }
 
@@ -45,6 +45,15 @@ def initialize():
 #### ====================================================================================================================== ####
 #############                                           PROCESS                                                    #############
 #### ====================================================================================================================== ####
+
+def spawn_enemies(wave_number):
+    if wave_number == 1:            #temporary just for first wave
+        return [Enemy("Lesser Alien", (1,-1)), Enemy("Lesser Alien", (1,-2)), Enemy("Lesser Alien", (1,-3)), Enemy("Lesser Alien", (1,-4))]
+    else:
+        #just to test the waves, real implementation needs to spawn different types and the current numbers are probalbly not balanced
+        return [Enemy("Lesser Alien", (1,-x)) for x in range(4*wave_number)] 
+
+
 
 def process(game_data):
     ''' Processing function - handles all form of user input. Raises flags to trigger certain actions in Update().
@@ -90,11 +99,20 @@ def update(game_data):
     Output: None
     '''
     update_shop(game_data["shop"], game_data["current_currency"], game_data["settings"])
+    update_all_enemies(game_data)
+    update_all_towers(game_data)
     
+def update_all_enemies(game_data):
     game_data["enemies"] = [i for i in game_data["enemies"] if i.alive == True]
-    for enemy in game_data["enemies"]:
-        update_enemy(enemy, game_data)
+    if game_data["enemies"]:
+        for enemy in game_data["enemies"]:
+            update_enemy(enemy, game_data)
+    else:
+        game_data["current_wave"] +=1
+        game_data["enemies"] = spawn_enemies(game_data["current_wave"])
 
+
+def update_all_towers(game_data):
     for tower in game_data["towers"]:
         update_tower(tower, game_data)
 
