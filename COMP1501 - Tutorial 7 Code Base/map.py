@@ -5,6 +5,7 @@
 from helper_functions import *
 import pygame
 import random
+import tile
 
 #### ====================================================================================================================== ####
 #############                                          MAP_CLASS                                                   #############
@@ -22,16 +23,25 @@ class Map:
         Output: A Map Object
         '''
         self.map_data = {}
-        self.r_locations = []
+
         row = 0; col = 0
         for cell_row in csv_loader("data/map.csv", readall=True):
             for cell_col in cell_row:
                 if len(cell_col) > 1:
                     cell_col = cell_col[-1]
-                self.map_data[(col, row)] = { "value": cell_col, "sprite": pygame.transform.scale(pygame.image.load(Map.legend_data[cell_col]["sprite"]), settings.tile_size) }
-                if cell_col == "R":
-                    t_s = settings.tile_size[0] #should probably use the seperate x and y stuff
-                    self.r_locations.append((40 + col*t_s - (t_s/2) , 40 + row*t_s - t_s/2))
+
+                if cell_col == "W":
+                    self.map_data[(col, row)] = tile.wallTile(col, row)
+
+                elif cell_col == "P":
+                    self.map_data[(col, row)] = tile.pathTile(col, row)
+                
+                elif cell_col == "S":
+                    self.map_data[(col, row)] = tile.startTile(col, row)
+
+                elif cell_col == "F":
+                    self.map_data[(col, row)] = tile.finishTile(col, row)
+                
                 col += 1
             row += 1; col = 0
         # if random_bool:
@@ -78,7 +88,7 @@ def render_map(map, screen, settings):
     Output: None
     '''
     for cell in map.map_data:
-        screen.blit(map.map_data[cell]["sprite"], [cell[0] * settings.tile_size[0], cell[1] * settings.tile_size[1]])
+        screen.blit(map.map_data[cell].sprite, [cell[0] * settings.tile_size[0], cell[1] * settings.tile_size[1]])
 
 def check_location(map, settings, location):
     if location[0] > 0 and location[0] < settings.window_size[1] and location[1] > 0 and location[1] < settings.window_size[0]-200:

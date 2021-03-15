@@ -28,6 +28,7 @@ class Enemy:
         self.direction = None
         self.effects = []
         self.alive = True
+        self.spriteNum = 0
 
     def takeHit(self, damage, effect=None):
         self.health -= damage
