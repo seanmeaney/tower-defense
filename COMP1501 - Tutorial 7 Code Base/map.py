@@ -45,3 +45,4 @@ def render_map(map, screen, settings):
 def check_location(map, settings, location):
     # Replace this with code for checking a given location for tower placement
     pass # Remove this once you've completed the code
+
