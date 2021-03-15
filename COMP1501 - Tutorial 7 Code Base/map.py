@@ -92,10 +92,8 @@ def render_map(map, screen, settings):
 
 def check_location(map, settings, location):
     if location[0] > 0 and location[0] < settings.window_size[1] and location[1] > 0 and location[1] < settings.window_size[0]-200:
-        test = (int(round(location[0]/20) * 20), int(round(location[1]/20) * 20))
-        if test in map.r_locations:
-            return False
-        else: 
+        print(f"location is {int(location[0]/20)}")
+        fixed_location = (int(location[0]/20), int(location[1]/20))
+        if map.map_data[fixed_location].type() == "wall":
             return True
-    else:
-        return False
+    return False
