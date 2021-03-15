@@ -2,6 +2,7 @@
 #############                                           IMPORTS                                                    #############
 #### ====================================================================================================================== ####
 
+from pygame.constants import USEREVENT
 from helper_functions import *
 from settings import *
 from shop import *
@@ -30,21 +31,31 @@ def initialize():
     # Initialize game_data and return it
     game_data = { "screen": pygame.display.set_mode(settings.window_size),
                   "current_currency": settings.starting_currency,
-                  "current_wave": 0,
+                  "current_wave": 1,
                   "stay_open": True,
                   "selected_tower": None,
                   "clicked": False,
                   "settings": settings,
                   "towers": [Basic_Tower("Basic Tower Lv.1", (3,3))],
-                  "enemies": [Enemy("Lesser Alien", (1,-1)), Enemy("Lesser Alien", (1,-2)), Enemy("Lesser Alien", (1,-3)), Enemy("Lesser Alien", (1,-4))],
+                  "enemies": spawn_enemies(1),
                   "shop": Shop("Space", settings),
-                  "map": Map(settings, True) }
+                  "map": Map(settings, False),
+                  "font_queue" : []}
 
     return game_data
 
 #### ====================================================================================================================== ####
 #############                                           PROCESS                                                    #############
 #### ====================================================================================================================== ####
+
+def spawn_enemies(wave_number):
+    if wave_number == 1:            #temporary just for first wave
+        return [Enemy("Lesser Alien", (1,-1)), Enemy("Lesser Alien", (1,-2)), Enemy("Lesser Alien", (1,-3)), Enemy("Lesser Alien", (1,-4))]
+    else:
+        #just to test the waves, real implementation needs to spawn different types and the current numbers are probalbly not balanced
+        return [Enemy("Lesser Alien", (1,-x)) for x in range(4*wave_number)] 
+
+
 
 def process(game_data):
     ''' Processing function - handles all form of user input. Raises flags to trigger certain actions in Update().
@@ -58,6 +69,10 @@ def process(game_data):
         if event.type == pygame.QUIT:
             game_data["stay_open"] = False
 
+        for f in game_data["font_queue"]:
+            if f[3] == event.type:
+                game_data["font_queue"].remove(f)
+
         # Handle Mouse Button Down
         if event.type == pygame.MOUSEBUTTONDOWN:
             game_data["clicked"] = True
@@ -70,19 +85,26 @@ def process(game_data):
         # Handle Mouse Button Up
         if event.type == pygame.MOUSEBUTTONUP:
             game_data["clicked"] = False
-            if game_data["selected_tower"] : 
-                if check_location(game_data["map"],game_data["settings"],pos): #temporary, also needs a check for money
-                    game_data["selected_tower"] = False
-                    game_data["towers"].append(Basic_Tower(game_data["shop"].clicked_item,tuple(map(lambda x: round((x-20)/20) , pos))))
-                    game_data["shop"].clicked_item = None
-                else:
-                    game_data["selected_tower"] = False
-                    game_data["shop"].clicked_item = None
+            if game_data["selected_tower"]: 
+                if check_location(game_data["map"],game_data["settings"],pos):
+                    if game_data["shop"].shop_data[game_data["shop"].clicked_item]["available"]:
+                        game_data["current_currency"] -= game_data["shop"].shop_data[game_data["shop"].clicked_item]["cost"]
+                        game_data["towers"].append(Basic_Tower(game_data["shop"].clicked_item,tuple(map(lambda x: round((x-20)/20) , pos))))
+                    else:
+                        add_to_font_queue(game_data,("Insufficent Funds!", True, (0,0,0)),(game_data["settings"].window_size[0]//2,0), 5000)
+                        
+            game_data["selected_tower"] = False
+            game_data["shop"].clicked_item = None
 
 
 #### ====================================================================================================================== ####
 #############                                            UPDATE                                                    #############
 #### ====================================================================================================================== ####
+
+def add_to_font_queue(game_data, what, where,time):
+    game_data["font_queue"].append((what,where,time,USEREVENT+where[0]))
+    pygame.time.set_timer(USEREVENT+where[0], time)
+
 
 def update(game_data):
     ''' Updating function - handles all the modifications to the game_data objects (other than boolean flags).
@@ -90,17 +112,30 @@ def update(game_data):
     Output: None
     '''
     update_shop(game_data["shop"], game_data["current_currency"], game_data["settings"])
+    update_all_enemies(game_data)
+    update_all_towers(game_data)
     
+def update_all_enemies(game_data):
     game_data["enemies"] = [i for i in game_data["enemies"] if i.alive == True]
-    for enemy in game_data["enemies"]:
-        update_enemy(enemy, game_data)
+    if game_data["enemies"]:
+        for enemy in game_data["enemies"]:
+            update_enemy(enemy, game_data)
+    else:
+        game_data["current_wave"] +=1
+        game_data["enemies"] = spawn_enemies(game_data["current_wave"])
 
+
+def update_all_towers(game_data):
     for tower in game_data["towers"]:
         update_tower(tower, game_data)
 
 #### ====================================================================================================================== ####
 #############                                            RENDER                                                    #############
 #### ====================================================================================================================== ####
+
+def render_font_queue(game_data):
+    for f in game_data["font_queue"]: 
+        game_data["screen"].blit(game_data["settings"].font.render(*f[0]),f[1])
 
 def render(game_data):
     ''' Rendering function - displays all objects to screen.
@@ -113,6 +148,7 @@ def render(game_data):
         render_enemy(enemy, game_data["screen"], game_data["settings"])
     for tower in game_data["towers"]:
         render_tower(tower, game_data["screen"], game_data["settings"])
+    render_font_queue(game_data)
     pygame.display.update()
 
 #### ====================================================================================================================== ####
