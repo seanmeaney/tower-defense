@@ -40,7 +40,8 @@ def initialize():
                   "enemies": spawn_enemies(1),
                   "shop": Shop("Space", settings),
                   "map": Map(settings, False),
-                  "font_queue" : []}
+                  "font_queue" : [],
+                  "event_inc" : 0}
 
     return game_data
 
@@ -103,8 +104,9 @@ def process(game_data):
 #### ====================================================================================================================== ####
 
 def add_to_font_queue(game_data, what, where,time):
-    game_data["font_queue"].append((what,where,time,USEREVENT+where[0]))
-    pygame.time.set_timer(USEREVENT+where[0], time)
+    game_data["event_inc"]+=1
+    game_data["font_queue"].append((what,where,time,USEREVENT+game_data["event_inc"]))
+    pygame.time.set_timer(USEREVENT+game_data["event_inc"], time)
 
 def update(game_data):
     ''' Updating function - handles all the modifications to the game_data objects (other than boolean flags).
