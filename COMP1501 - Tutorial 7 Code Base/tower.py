@@ -26,7 +26,7 @@ class Tower:
         self.radius = Tower.tower_data[tower_type]["radius"]
         self.damage = Tower.tower_data[tower_type]["damage"]
         self.rate_of_fire = Tower.tower_data[tower_type]["rate_of_fire"]
-        self.location = (location[0]*20+20, location[1]*20+20)
+        self.location = (round((location[0]-30)/40)*40, round((location[1]-30)/40)*40)
         self.isClicked = False
         self.firingAt = None
         self.recharge = self.rate_of_fire

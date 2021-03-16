@@ -90,7 +90,7 @@ def process(game_data):
                     if game_data["shop"].clicked_item.available:
                         game_data["current_currency"] -= game_data["shop"].clicked_item.cost
                         if game_data["shop"].clicked_item.type == "tower":
-                            game_data["towers"].append(game_data["shop"].clicked_item.construct_item((game_data["shop"].clicked_item.name, tuple(map(lambda x: round((x-20)/20) , pos)))))
+                            game_data["towers"].append(game_data["shop"].clicked_item.construct_item((game_data["shop"].clicked_item.name, pos)))
                     else:
                         add_to_font_queue(game_data,("Insufficent Funds!", True, (0,0,0)),(game_data["settings"].window_size[0]//2,0), 3000)
                         
