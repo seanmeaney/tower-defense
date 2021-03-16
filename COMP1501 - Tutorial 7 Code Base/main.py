@@ -33,10 +33,10 @@ def initialize():
                   "current_currency": settings.starting_currency,
                   "current_wave": 1,
                   "stay_open": True,
-                  "selected_tower": None,
+                  "selected_item": None,
                   "clicked": False,
                   "settings": settings,
-                  "towers": [Basic_Tower("Basic Tower Lv.1", (3,3))],
+                  "towers": [],
                   "enemies": spawn_enemies(1),
                   "shop": Shop("Space", settings),
                   "map": Map(settings, False),
@@ -76,24 +76,25 @@ def process(game_data):
         # Handle Mouse Button Down
         if event.type == pygame.MOUSEBUTTONDOWN:
             game_data["clicked"] = True
-            game_data["selected_tower"] = False
+            game_data["selected_item"] = False
             if (t:=game_data["shop"].selected_item):
                 game_data["shop"].clicked_item = t
                 game_data["shop"].selected_item = None
-                game_data["selected_tower"] = True
+                game_data["selected_item"] = True
 
         # Handle Mouse Button Up
         if event.type == pygame.MOUSEBUTTONUP:
             game_data["clicked"] = False
-            if game_data["selected_tower"]: 
+            if game_data["selected_item"]: 
                 if check_location(game_data["map"],game_data["settings"],pos):
-                    if game_data["shop"].shop_data[game_data["shop"].clicked_item]["available"]:
-                        game_data["current_currency"] -= game_data["shop"].shop_data[game_data["shop"].clicked_item]["cost"]
-                        game_data["towers"].append(Basic_Tower(game_data["shop"].clicked_item,tuple(map(lambda x: round((x-20)/20) , pos))))
+                    if game_data["shop"].clicked_item.available:
+                        game_data["current_currency"] -= game_data["shop"].clicked_item.cost
+                        if game_data["shop"].clicked_item.type == "tower":
+                            game_data["towers"].append(game_data["shop"].clicked_item.construct_item((game_data["shop"].clicked_item.name, tuple(map(lambda x: round((x-20)/20) , pos)))))
                     else:
                         add_to_font_queue(game_data,("Insufficent Funds!", True, (0,0,0)),(game_data["settings"].window_size[0]//2,0), 3000)
                         
-            game_data["selected_tower"] = False
+            game_data["selected_item"] = False
             game_data["shop"].clicked_item = None
 
 
