@@ -106,7 +106,10 @@ class shop_item():
         self.location = None
         self.class_name = csv_data[6]
     def construct_item(self, args):
-        return tower.Basic_Tower(args[0], args[1])
+        if args[0] == "Basic Tower Lv.1":
+            return tower.Basic_Tower(args[0], args[1])
+        elif args[0] == "Basic Tower Lv.2":
+            return tower.Medium_Tower(args[0], args[1])
 
 class ui_data():
     def __init__(self):
