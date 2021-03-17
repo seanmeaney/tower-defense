@@ -51,10 +51,10 @@ def initialize():
 
 def spawn_enemies(wave_number):
     if wave_number == 1:            #temporary just for first wave
-        return [Enemy("Lesser Alien", (1,0)), Enemy("Lesser Alien", (1,-3)), Enemy("Lesser Alien", (1,-6)), Enemy("Lesser Alien", (1,-9))]
+        return [Basic_Bot("Lesser Alien", (1,0))]
     else:
         #just to test the waves, real implementation needs to spawn different types and the current numbers are probalbly not balanced
-        return [Enemy("Lesser Alien", (1,-3*x)) for x in range(4*wave_number)] 
+        return [Basic_Bot("Lesser Alien", (1,-3*x)) for x in range(4*wave_number)] 
 
 
 

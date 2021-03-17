@@ -81,11 +81,19 @@ class Map:
         fixed_pos = (int((round(pos[0]-20)/40)), int(round((pos[1]-20)/40)))
         if self.map_data[fixed_pos].type() == "path":
             self.map_data[fixed_pos] = tile.wallTile(fixed_pos[0], fixed_pos[1])
+
     def build_path(self, pos):
         print("Inside Build_Path")
         fixed_pos = (int((round(pos[0]-20)/40)), int(round((pos[1]-20)/40)))
         if self.map_data[fixed_pos].type() == "wall":
             self.map_data[fixed_pos] = tile.pathTile(fixed_pos[0], fixed_pos[1])
+
+    def check_location(self, location):
+        if location[0] > 0 and location[1] > 0:
+            fixed_location = (int((round(location[0]-20)/40)), int(round((location[1]-20)/40)))
+            if self.map_data[fixed_location].type() == "wall":
+                return True
+        return False
 #### ====================================================================================================================== ####
 #############                                        MAP_FUNCTIONS                                                 #############
 #### ====================================================================================================================== ####

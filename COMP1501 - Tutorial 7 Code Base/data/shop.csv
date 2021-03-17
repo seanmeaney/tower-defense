@@ -1,6 +1,6 @@
 ﻿Names, Type, Sprites,Available,Cost,Radius, Object Name
-Basic Tower Lv.1,tower,assets/towers/basic_tower_1.png,True,50,125,Basic_Tower
-Basic Tower Lv.2,tower,assets/towers/basic_tower_2.png,True,100,200,Basic_Tower
+Basic Tower Lv.1,tower,assets/towers/basic_tower.png,True,50,125,Basic_Tower
+Basic Tower Lv.2,tower,assets/towers/medium_tower.png,True,100,200,Basic_Tower
 Basic Tower Lv.3,tower,assets/towers/basic_tower_3.png,True,150,275,Basic_Tower
 Wall,wall,assets/map/wall_tile.png,True,10,0,wallTile
 Path,path,assets/map/path_tile.png,True,10,0,pathTile

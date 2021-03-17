@@ -31,10 +31,36 @@ class Tower:
         self.firingAt = None
         self.recharge = self.rate_of_fire
         self.zapping = None
+        self.ammo_colour = (255,255,255)
 
 class Basic_Tower(Tower):
     def __init__(self, tower_type, location):
         super().__init__(tower_type, location)
+        self.ammo_colour = colours.magenta
+
+    def handle_firing(self, enemies):
+        if self.recharge >= self.rate_of_fire and len(enemies) != 0:
+            self.recharge = 0
+            closest = (enemies[0], distance_between_points(self.location, enemies[0].location)) 
+            for enemy in enemies:
+                if distance_between_points(self.location, enemy.location) < closest[1]:
+                    closest = (enemy, distance_between_points(self.location, enemy.location))
+            if closest[1] <= self.radius: 
+                self.firingAt = closest[0]
+                self.zapping = closest[0]
+        elif self.recharge < self.rate_of_fire:
+            self.recharge += 1
+            self.firingAt = None
+        else:
+            self.firingAt = None
+        if self.recharge > 10:
+            self.zapping = None
+
+
+class Medium_Tower(Tower):
+    def __init__(self, tower_type, location):
+        super().__init__(tower_type, location)
+        self.ammo_colour = colours.cyan
 
     def handle_firing(self, enemies):
         if self.recharge >= self.rate_of_fire and len(enemies) != 0:
@@ -73,6 +99,5 @@ def render_tower(tower, screen, settings):
     Output: None
     '''
     screen.blit(tower.sprite, tower.location)
-    if tower.name == "Basic Tower Lv.1":
-        if tower.zapping is not None:
-            pygame.draw.aaline(screen, colours.magenta, (tower.location[0]+20, tower.location[1]+20), (tower.zapping.location[0]+20, tower.zapping.location[1]+20))
+    if tower.zapping is not None:
+        pygame.draw.aaline(screen, tower.ammo_colour, (tower.location[0]+20, tower.location[1]+20), (tower.zapping.location[0]+20, tower.zapping.location[1]+20))
