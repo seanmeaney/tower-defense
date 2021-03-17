@@ -75,6 +75,7 @@ def process(game_data):
 
         if event.type == NEXTLEVEL:
             game_data["state"] = "normal"
+            game_data["enemies"] = spawn_enemies(game_data["current_wave"])
 
         for f in game_data["font_queue"]:
             if f[3] == event.type:
@@ -138,7 +139,6 @@ def update_all_enemies(game_data):
             update_enemy(enemy, game_data)
     else:
         game_data["current_wave"] +=1
-        game_data["enemies"] = spawn_enemies(game_data["current_wave"])
         game_data["state"] = "temp"
         pygame.time.set_timer(NEXTLEVEL, 3000)
 
