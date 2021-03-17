@@ -57,7 +57,7 @@ def spawn_enemies(wave_number):
         return [Enemy("Lesser Alien", (1,0)), Enemy("Lesser Alien", (1,-3)), Enemy("Lesser Alien", (1,-6)), Enemy("Lesser Alien", (1,-9))]
     else:
         #just to test the waves, real implementation needs to spawn different types and the current numbers are probalbly not balanced
-        return [Enemy("Lesser Alien", (1,-3*x)) for x in range(4*wave_number)] 
+        return [Enemy("Lesser Alien", (32,0 - 2* x)) for x in range(4*wave_number)] 
 
 
 
@@ -137,10 +137,12 @@ def update_all_enemies(game_data):
     if game_data["enemies"]:
         for enemy in game_data["enemies"]:
             update_enemy(enemy, game_data)
+            if check_location(game_data["map"], game_data["settings"], enemy.location) == "l's":
+                game_data["stay_open"] = False
     else:
         game_data["current_wave"] +=1
         game_data["state"] = "temp"
-        pygame.time.set_timer(NEXTLEVEL, 3000)
+        pygame.time.set_timer(NEXTLEVEL, 3000, True)
 
 def update_all_towers(game_data):
     for tower in game_data["towers"]:
@@ -166,7 +168,7 @@ def render(game_data):
     for tower in game_data["towers"]:
         render_tower(tower, game_data["screen"], game_data["settings"])
     render_font_queue(game_data)
-    if game_data["state"] != "normal":
+    if game_data["state"] == "temp":
         cur = str(game_data["current_wave"])
         game_data["screen"].blit(game_data["settings"].title_font.render("Stage" + cur, True, (255,255,255)), (375,0))
     pygame.display.update()

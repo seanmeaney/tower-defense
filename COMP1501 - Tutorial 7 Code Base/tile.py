@@ -58,4 +58,7 @@ class finishTile(Tile):
         super().__init__(xpos, ypos)
         self.sprite = pygame.transform.scale(pygame.image.load("assets/map/finish_tile.png").convert_alpha(), (40, 40))
 
+    def type(self):
+        return "end"
+
 

@@ -105,6 +105,8 @@ def check_location(map, settings, location):
         fixed_location = (int((round(location[0]-20)/40)), int(round((location[1]-20)/40)))
         if map.map_data[fixed_location].type() == "wall":
             return True
+        if map.map_data[fixed_location].type() == "end":
+            return "l's"
     return False
 
 
