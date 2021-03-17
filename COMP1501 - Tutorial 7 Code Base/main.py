@@ -12,6 +12,8 @@ from map import *
 import pygame
 import sys
 
+NEXTLEVEL = USEREVENT + 20
+
 #### ====================================================================================================================== ####
 #############                                         INITIALIZE                                                   #############
 #### ====================================================================================================================== ####
@@ -41,7 +43,8 @@ def initialize():
                   "shop": Shop("Space", settings),
                   "map": Map(settings, False),
                   "font_queue" : [],
-                  "event_inc" : 0}
+                  "event_inc" : 0,
+                  "state" : "normal"}
 
     return game_data
 
@@ -70,9 +73,15 @@ def process(game_data):
         if event.type == pygame.QUIT:
             game_data["stay_open"] = False
 
+        if event.type == NEXTLEVEL:
+            game_data["state"] = "normal"
+            game_data["enemies"] = spawn_enemies(game_data["current_wave"])
+
         for f in game_data["font_queue"]:
             if f[3] == event.type:
                 game_data["font_queue"].remove(f)
+                if game_data["font_queue"] == []:
+                    game_data["event_inc"] = 0
 
         # Handle Mouse Button Down
         if event.type == pygame.MOUSEBUTTONDOWN:
@@ -118,8 +127,10 @@ def update(game_data):
     Output: None
     '''
     update_shop(game_data["shop"], game_data["current_currency"], game_data["settings"])
-    update_all_enemies(game_data)
-    update_all_towers(game_data)
+    if game_data["state"] == "normal":
+        update_all_enemies(game_data)
+        update_all_towers(game_data)
+    
     
 def update_all_enemies(game_data):
     game_data["enemies"] = [i for i in game_data["enemies"] if i.alive == True]
@@ -128,7 +139,8 @@ def update_all_enemies(game_data):
             update_enemy(enemy, game_data)
     else:
         game_data["current_wave"] +=1
-        game_data["enemies"] = spawn_enemies(game_data["current_wave"])
+        game_data["state"] = "temp"
+        pygame.time.set_timer(NEXTLEVEL, 3000)
 
 def update_all_towers(game_data):
     for tower in game_data["towers"]:
@@ -154,6 +166,9 @@ def render(game_data):
     for tower in game_data["towers"]:
         render_tower(tower, game_data["screen"], game_data["settings"])
     render_font_queue(game_data)
+    if game_data["state"] != "normal":
+        cur = str(game_data["current_wave"])
+        game_data["screen"].blit(game_data["settings"].title_font.render("Stage" + cur, True, (255,255,255)), (375,0))
     pygame.display.update()
 
 #### ====================================================================================================================== ####
