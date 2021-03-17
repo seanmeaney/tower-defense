@@ -76,6 +76,16 @@ class Map:
 
     def temp(self, value,settings):
         return {"value": value, "sprite": pygame.transform.scale(pygame.image.load(Map.legend_data[value]["sprite"]), settings.tile_size)}
+    
+    def build_wall(self, pos):
+        fixed_pos = (int((round(pos[0]-20)/40)), int(round((pos[1]-20)/40)))
+        if self.map_data[fixed_pos].type() == "path":
+            self.map_data[fixed_pos] = tile.wallTile(fixed_pos[0], fixed_pos[1])
+    def build_path(self, pos):
+        print("Inside Build_Path")
+        fixed_pos = (int((round(pos[0]-20)/40)), int(round((pos[1]-20)/40)))
+        if self.map_data[fixed_pos].type() == "wall":
+            self.map_data[fixed_pos] = tile.pathTile(fixed_pos[0], fixed_pos[1])
 #### ====================================================================================================================== ####
 #############                                        MAP_FUNCTIONS                                                 #############
 #### ====================================================================================================================== ####
@@ -96,3 +106,7 @@ def check_location(map, settings, location):
         if map.map_data[fixed_location].type() == "wall":
             return True
     return False
+
+
+
+

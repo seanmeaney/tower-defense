@@ -51,10 +51,10 @@ def initialize():
 
 def spawn_enemies(wave_number):
     if wave_number == 1:            #temporary just for first wave
-        return [Enemy("Lesser Alien", (1,-1)), Enemy("Lesser Alien", (1,-2)), Enemy("Lesser Alien", (1,-3)), Enemy("Lesser Alien", (1,-4))]
+        return [Enemy("Lesser Alien", (1,0)), Enemy("Lesser Alien", (1,-3)), Enemy("Lesser Alien", (1,-6)), Enemy("Lesser Alien", (1,-9))]
     else:
         #just to test the waves, real implementation needs to spawn different types and the current numbers are probalbly not balanced
-        return [Enemy("Lesser Alien", (1,-x)) for x in range(4*wave_number)] 
+        return [Enemy("Lesser Alien", (1,-3*x)) for x in range(4*wave_number)] 
 
 
 
@@ -94,7 +94,11 @@ def process(game_data):
                             game_data["towers"].append(game_data["shop"].clicked_item.construct_item((game_data["shop"].clicked_item.name, pos)))
                     else:
                         add_to_font_queue(game_data,("Insufficent Funds!", True, (0,0,0)),(game_data["settings"].window_size[0]//2,0), 3000)
-                        
+                if game_data["shop"].clicked_item.type == "wall" and game_data["shop"].clicked_item.available:
+                    game_data["map"].build_wall(pos)
+                if game_data["shop"].clicked_item.type == "path" and game_data["shop"].clicked_item.available:
+                    print("got here")
+                    game_data["map"].build_path(pos)
             game_data["selected_item"] = False
             game_data["shop"].clicked_item = None
 

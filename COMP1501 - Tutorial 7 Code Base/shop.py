@@ -90,7 +90,6 @@ def render_shop(shop, screen, settings, current_currency):
 
     # Handle Selected Tower
     if shop.clicked_item is not None:
-        print(f"{shop.ui_data.radius_sprite, (shop.clicked_item.radius * 2, shop.clicked_item.radius * 2)}")
         screen.blit(pygame.transform.scale(shop.ui_data.radius_sprite, (shop.clicked_item.radius * 2, shop.clicked_item.radius * 2)), (pygame.mouse.get_pos()[0] - shop.clicked_item.radius, pygame.mouse.get_pos()[1] - shop.clicked_item.radius))
         screen.blit(shop.clicked_item.sprite, (pygame.mouse.get_pos()[0] - shop.ui_data.item_size // 2, pygame.mouse.get_pos()[1] - shop.ui_data.item_size // 2))
 

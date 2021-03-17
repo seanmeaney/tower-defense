@@ -5,6 +5,7 @@
 from helper_functions import *
 import pygame
 import random
+import os
 
 #### ====================================================================================================================== ####
 #############                                         ENEMY_CLASS                                                  #############
@@ -22,7 +23,12 @@ class Enemy:
         Output: An Enemy Object
         '''
         self.name = enemy_type
-        self.sprite = pygame.transform.scale(pygame.image.load(Enemy.enemy_data[enemy_type]["sprite"]).convert_alpha(), (40, 40))
+        self.sprite = []
+        self.pnglist = os.listdir(Enemy.enemy_data[enemy_type]["sprite"])
+        for frame in self.pnglist:
+            self.sprite.append(pygame.transform.flip(pygame.transform.scale(pygame.image.load(Enemy.enemy_data[enemy_type]["sprite"]+"/"+frame).convert_alpha(), (40, 40)), False, True))
+        self.sprite_frames = len(self.sprite)
+        self.sprite_counter = 0
         self.health = Enemy.enemy_data[enemy_type]["health"]
         self.speed = Enemy.enemy_data[enemy_type]["speed"]
         self.location = ((location[0]*20)+20, (location[1]*20)+20)
@@ -33,7 +39,6 @@ class Enemy:
 
     def takeHit(self, damage, effect=None):
         self.health -= damage
-        print(f"hit taken! health is now {self.health}")
         if effect not in self.effects and effect is not None:
             self.effects.append(effect)
 
@@ -63,6 +68,10 @@ def update_enemy(enemy, game_data):
     enemy.move(game_data["map"])
     if enemy.health <= 0:
         enemy.alive = False
+    if int(enemy.sprite_counter) < enemy.sprite_frames - 1:
+        enemy.sprite_counter += 0.1
+    else:
+        enemy.sprite_counter = 0
 
 def render_enemy(enemy, screen, settings):
     ''' Helper function that renders a single provided Enemy.
@@ -70,4 +79,4 @@ def render_enemy(enemy, screen, settings):
     Output: None
     '''
     if enemy.alive:
-        screen.blit(enemy.sprite, enemy.location)
+        screen.blit(enemy.sprite[int(enemy.sprite_counter)], enemy.location)
