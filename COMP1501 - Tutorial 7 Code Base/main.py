@@ -55,12 +55,14 @@ def initialize():
 def spawn_enemies(wave_number):
     if wave_number == 1:            #temporary just for first wave
         return [Basic_Bot("Lesser Alien", (1,0))]
-    else:
+    elif wave_number < 4:
         #just to test the waves, real implementation needs to spawn different types and the current numbers are probalbly not balanced
         return [Basic_Bot("Lesser Alien", (1,-1*x)) for x in range(4*wave_number)] 
-
-
-
+    elif wave_number >= 4:
+        bots = [Basic_Bot("Lesser Alien", (1, -1*x)) for x in range(3*wave_number)]
+        for y in range(int(2*wave_number/4)):
+            bots.append(Basic_Bot("Heavy", (1, -1*y)))
+        return bots
 def process(game_data):
     ''' Processing function - handles all form of user input. Raises flags to trigger certain actions in Update().
     Input: game_data dictionary
@@ -106,7 +108,6 @@ def process(game_data):
                 if game_data["shop"].clicked_item.type == "wall" and game_data["shop"].clicked_item.available:
                     game_data["map"].build_wall(pos)
                 if game_data["shop"].clicked_item.type == "path" and game_data["shop"].clicked_item.available:
-                    print("got here")
                     game_data["map"].build_path(pos)
             game_data["selected_item"] = False
             game_data["shop"].clicked_item = None
@@ -133,6 +134,7 @@ def update(game_data):
     
     
 def update_all_enemies(game_data):
+    enemies = game_data["enemies"]
     game_data["enemies"] = [i for i in game_data["enemies"] if i.alive == True]
     if game_data["enemies"]:
         for enemy in game_data["enemies"]:

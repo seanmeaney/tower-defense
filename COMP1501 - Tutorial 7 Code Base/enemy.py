@@ -111,13 +111,17 @@ class Basic_Bot(Enemy):
                 
 
         blocked = facing_wall or (world_map.fix_location(looking_at) in self.traversed_tiles and self.traversed_tiles[world_map.fix_location(looking_at)] < int(self.passable))
+        counter = 0
         while blocked:
             self.turn_cc()
             looking_at = (self.location[0]+max(self.direction[0]*40, self.direction[0]*2), self.location[1]+self.direction[1]*20)
             self.looking_at = looking_at
             facing_wall = world_map.check_location(looking_at)
             blocked = facing_wall or (world_map.fix_location(looking_at) in self.traversed_tiles and self.traversed_tiles[world_map.fix_location(looking_at)] < int(self.passable))
-            self.passable += 0.25
+            counter += 1
+            if counter >= 8 and not facing_wall:
+                blocked = False
+                counter = 0
 
 
         self.last_tile = world_map.fix_location(self.location)
