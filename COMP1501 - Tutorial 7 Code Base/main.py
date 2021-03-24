@@ -139,6 +139,9 @@ def update_all_enemies(game_data):
             enemy.update(game_data)
             if check_location(game_data["map"], game_data["settings"], enemy.location) == "l's":
                 game_data["stay_open"] = False
+            if enemy.alive == False:
+                game_data["current_currency"] +=10
+                del(enemy)
     else:
         game_data["current_wave"] +=1
         game_data["state"] = "temp"
