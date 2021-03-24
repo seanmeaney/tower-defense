@@ -111,10 +111,14 @@ def render_map(map, screen, settings):
     for cell in map.map_data:
         screen.blit(map.map_data[cell].sprite, [cell[0] * settings.tile_size[0], cell[1] * settings.tile_size[1]])
 
-def check_location(map, settings, location):
+def check_location(map, settings, location, other_towers = None):
     if location[0] > 0 and location[0] < settings.window_size[1] and location[1] > 0 and location[1] < settings.window_size[0]-200:
         fixed_location = fix_location(location)
         if map.map_data[fixed_location].type() == "wall":
+            other = fixed_location[0] * 40,fixed_location[1]*40
+            for tower in other_towers:
+                if other == tower.location:
+                    return False
             return True
         if map.map_data[fixed_location].type() == "end":
             return "l's"

@@ -96,13 +96,13 @@ def process(game_data):
         if event.type == pygame.MOUSEBUTTONUP:
             game_data["clicked"] = False
             if game_data["selected_item"]: 
-                if check_location(game_data["map"],game_data["settings"],pos):
+                if check_location(game_data["map"],game_data["settings"],pos, other_towers = game_data["towers"]):
                     if game_data["shop"].clicked_item.available:
                         game_data["current_currency"] -= game_data["shop"].clicked_item.cost
                         if game_data["shop"].clicked_item.type == "tower":
                             game_data["towers"].append(game_data["shop"].clicked_item.construct_item((game_data["shop"].clicked_item.name, pos)))
                     else:
-                        add_to_font_queue(game_data,("Insufficent Funds!", True, (0,0,0)),(game_data["settings"].window_size[0]//2,0), 3000)
+                        add_to_font_queue(game_data,("Insufficent Funds!", True, (0,0,0)),(game_data["settings"].window_size[0]//2 -100,0), 3000)
                 if game_data["shop"].clicked_item.type == "wall" and game_data["shop"].clicked_item.available:
                     game_data["map"].build_wall(pos)
                 if game_data["shop"].clicked_item.type == "path" and game_data["shop"].clicked_item.available:
