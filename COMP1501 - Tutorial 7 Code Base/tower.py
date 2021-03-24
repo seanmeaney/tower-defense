@@ -100,4 +100,4 @@ def render_tower(tower, screen, settings):
     '''
     screen.blit(tower.sprite, tower.location)
     if tower.zapping is not None:
-        pygame.draw.aaline(screen, tower.ammo_colour, (tower.location[0]+20, tower.location[1]+20), (tower.zapping.location[0]+20, tower.zapping.location[1]+20))
+        pygame.draw.aaline(screen, tower.ammo_colour, (tower.location[0]+20, tower.location[1]+20), (tower.zapping.location[0], tower.zapping.location[1]))

@@ -94,6 +94,9 @@ class Map:
             if self.map_data[fixed_location].type() == "wall":
                 return True
         return False
+    def fix_location(self, location):
+        fixed = (int((round(location[0]-20)/40)), int(round((location[1]-20)/40)))
+        return fixed
 #### ====================================================================================================================== ####
 #############                                        MAP_FUNCTIONS                                                 #############
 #### ====================================================================================================================== ####
@@ -110,12 +113,20 @@ def render_map(map, screen, settings):
 
 def check_location(map, settings, location):
     if location[0] > 0 and location[0] < settings.window_size[1] and location[1] > 0 and location[1] < settings.window_size[0]-200:
-        fixed_location = (int((round(location[0]-20)/40)), int(round((location[1]-20)/40)))
+        fixed_location = fix_location(location)
         if map.map_data[fixed_location].type() == "wall":
             return True
         if map.map_data[fixed_location].type() == "end":
             return "l's"
     return False
+
+def fix_location(location):
+    fixed = (int((round(location[0]-20)/40)), int(round((location[1]-20)/40)))
+    return fixed
+
+def unfix_location(location):
+    unfixed = ((location[0]*40)+20, (location[1]*40)+20)
+    return unfixed
 
 
 

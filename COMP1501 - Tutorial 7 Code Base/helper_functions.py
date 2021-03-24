@@ -43,3 +43,5 @@ def location_to_grid(location):
 class colours:
     magenta = (219, 21, 131)
     cyan = (66, 230, 245)
+    green = (0, 255, 0)
+    blue = (0,0,255)

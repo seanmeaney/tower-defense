@@ -1,5 +1,5 @@
 ﻿Name,Sprite,Health,Speed
-Lesser Alien,assets/enemies/basic_bot_sprite,10,0.5
+Lesser Alien,assets/enemies/basic_bot_sprite,10,1
 Alien,assets/enemies/alien.png,25,6
 Greater Alien,assets/enemies/greater_alien.png,35,12
 Elder Alien,assets/enemies/greater_alien.png,125,4

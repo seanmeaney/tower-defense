@@ -57,7 +57,7 @@ def spawn_enemies(wave_number):
         return [Basic_Bot("Lesser Alien", (1,0))]
     else:
         #just to test the waves, real implementation needs to spawn different types and the current numbers are probalbly not balanced
-        return [Basic_Bot("Lesser Alien", (1,-3*x)) for x in range(4*wave_number)] 
+        return [Basic_Bot("Lesser Alien", (1,-1*x)) for x in range(4*wave_number)] 
 
 
 
@@ -136,7 +136,7 @@ def update_all_enemies(game_data):
     game_data["enemies"] = [i for i in game_data["enemies"] if i.alive == True]
     if game_data["enemies"]:
         for enemy in game_data["enemies"]:
-            update_enemy(enemy, game_data)
+            enemy.update(game_data)
             if check_location(game_data["map"], game_data["settings"], enemy.location) == "l's":
                 game_data["stay_open"] = False
     else:
@@ -164,7 +164,7 @@ def render(game_data):
     render_map(game_data["map"], game_data["screen"], game_data["settings"])
     render_shop(game_data["shop"], game_data["screen"], game_data["settings"], game_data["current_currency"])
     for enemy in game_data["enemies"]:
-        render_enemy(enemy, game_data["screen"], game_data["settings"])
+        enemy.render(game_data["screen"], game_data["settings"])
     for tower in game_data["towers"]:
         render_tower(tower, game_data["screen"], game_data["settings"])
     render_font_queue(game_data)
