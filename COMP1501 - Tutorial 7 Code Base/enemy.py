@@ -156,3 +156,21 @@ class Alien_Bot(Enemy):
 
 
 
+def update_enemy(enemy, game_data):
+    enemy.move(game_data["map"])
+    if enemy.health <= 0:
+        enemy.alive = False
+        game_data["current_currency"]+=17
+    if int(enemy.sprite_counter) < enemy.sprite_frames - 1:
+        enemy.sprite_counter += 0.1
+    else:
+        enemy.sprite_counter = 0
+    enemy.navigate(game_data["map"])
+
+def render_enemy(enemy, screen, settings):
+    ''' Helper function that renders a single provided Enemy.
+    Input: Enemy Object, screen (pygame display), Settings Object
+    Output: None
+    '''
+    if enemy.alive:
+        screen.blit(enemy.sprite[int(enemy.sprite_counter)], enemy.location)
