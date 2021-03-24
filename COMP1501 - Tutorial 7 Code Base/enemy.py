@@ -103,6 +103,7 @@ def update_enemy(enemy, game_data):
     enemy.move(game_data["map"])
     if enemy.health <= 0:
         enemy.alive = False
+        game_data["current_currency"]+=17
     if int(enemy.sprite_counter) < enemy.sprite_frames - 1:
         enemy.sprite_counter += 0.1
     else:
