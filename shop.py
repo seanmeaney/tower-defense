@@ -110,6 +110,8 @@ class shop_item():
             return tower.Basic_Tower(args[0], args[1])
         elif args[0] == "Basic Tower Lv.2":
             return tower.Medium_Tower(args[0], args[1])
+        elif args[0] == "Basic Tower Lv.3":
+            return tower.Basic_Tower(args[0], args[1])
 
 class ui_data():
     def __init__(self):

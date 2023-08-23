@@ -134,7 +134,6 @@ def update(game_data):
     
     
 def update_all_enemies(game_data):
-    enemies = game_data["enemies"]
     game_data["enemies"] = [i for i in game_data["enemies"] if i.alive == True]
     if game_data["enemies"]:
         for enemy in game_data["enemies"]:
