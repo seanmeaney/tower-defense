@@ -15,27 +15,83 @@ class Tower:
     tower_data = {}
     for tower in csv_loader("data/towers.csv"):
         tower_data[tower[0]] = { "sprite": tower[1], "damage": int(tower[2]), "rate_of_fire": int(tower[3]), "radius": int(tower[4]) }
-    def __init__(self, tower_type, location, radius_sprite):
+    def __init__(self, tower_type, location):
         ''' Initialization for Tower.
         Input: tower_type (string), location (tuple), radius_sprite (pygame.Surface)
         Output: A Tower Object
         '''
         self.name = tower_type
-        self.sprite = pygame.image.load(Tower.tower_data[tower_type]["sprite"]).convert_alpha()
-        self.radius_sprite = radius_sprite
+        self.sprite = pygame.transform.scale(pygame.image.load(Tower.tower_data[tower_type]["sprite"]).convert_alpha(), (40,40))
+        #self.radius_sprite = radius_sprite
         self.radius = Tower.tower_data[tower_type]["radius"]
         self.damage = Tower.tower_data[tower_type]["damage"]
         self.rate_of_fire = Tower.tower_data[tower_type]["rate_of_fire"]
-        self.location = location
+        self.location = (round((location[0]-30)/40)*40, round((location[1]-30)/40)*40)
         self.isClicked = False
+        self.firingAt = None
+        self.recharge = self.rate_of_fire
+        self.zapping = None
+        self.ammo_colour = (255,255,255)
+
+class Basic_Tower(Tower):
+    def __init__(self, tower_type, location):
+        super().__init__(tower_type, location)
+        self.ammo_colour = colours.magenta
+
+    def handle_firing(self, enemies):
+        if self.recharge >= self.rate_of_fire and len(enemies) != 0:
+            self.recharge = 0
+            closest = (enemies[0], distance_between_points(self.location, enemies[0].location)) 
+            for enemy in enemies:
+                if distance_between_points(self.location, enemy.location) < closest[1]:
+                    closest = (enemy, distance_between_points(self.location, enemy.location))
+            if closest[1] <= self.radius: 
+                self.firingAt = closest[0]
+                self.zapping = closest[0]
+        elif self.recharge < self.rate_of_fire:
+            self.recharge += 1
+            self.firingAt = None
+        else:
+            self.firingAt = None
+        if self.recharge > 10:
+            self.zapping = None
+
+
+class Medium_Tower(Tower):
+    def __init__(self, tower_type, location):
+        super().__init__(tower_type, location)
+        self.ammo_colour = colours.cyan
+
+    def handle_firing(self, enemies):
+        if self.recharge >= self.rate_of_fire and len(enemies) != 0:
+            self.recharge = 0
+            closest = (enemies[0], distance_between_points(self.location, enemies[0].location)) 
+            for enemy in enemies:
+                if distance_between_points(self.location, enemy.location) < closest[1]:
+                    closest = (enemy, distance_between_points(self.location, enemy.location))
+            if closest[1] <= self.radius: 
+                self.firingAt = closest[0]
+                self.zapping = closest[0]
+        elif self.recharge < self.rate_of_fire:
+            self.recharge += 1
+            self.firingAt = None
+        else:
+            self.firingAt = None
+        if self.recharge > 10:
+            self.zapping = None
+        
+
+
 
 #### ====================================================================================================================== ####
 #############                                       TOWER_FUNCTIONS                                                #############
 #### ====================================================================================================================== ####
 
-def update_tower(tower, clicked):
-    # Replace with code for updating tower
-    pass # Remove this once you've completed the code
+def update_tower(tower, game_data):
+    tower.handle_firing(game_data["enemies"])
+    if tower.firingAt is not None:
+        tower.firingAt.takeHit(tower.damage)
+
 
 def render_tower(tower, screen, settings):
     ''' Helper function that renders a single provided Tower.
@@ -43,3 +99,5 @@ def render_tower(tower, screen, settings):
     Output: None
     '''
     screen.blit(tower.sprite, tower.location)
+    if tower.zapping is not None:
+        pygame.draw.aaline(screen, tower.ammo_colour, (tower.location[0]+20, tower.location[1]+20), (tower.zapping.location[0], tower.zapping.location[1]))
